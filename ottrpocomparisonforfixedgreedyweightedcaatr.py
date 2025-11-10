@@ -1,9 +1,6 @@
 """
 OT-TRPO (Optimal Transport TRPO) implementation with dual formulation
-for the differential game. Based on the Wasserstein distance constraint
-and Kantorovich duality.
-
-This version includes multiple adaptive trust region methods for comparison:
+for the differential game.
 1.  'fixed': Standard TRPO with a constant trust region radius.
 2.  'greedy': Allocates a shared budget based on an agent's advantage-to-cost ratio.
 3.  'weighted': Allocates a shared budget using a "water-filling" optimization.
@@ -17,26 +14,21 @@ import copy
 
 
 class DifferentialGameEnv:
-    """
-    Two-player differential game with a local and global optimum.
-    The local optimum is strengthened to create a more challenging test.
-    R(a1, a2) = 10*N(5,5; 1,3) + 6.5*N(1,1; 1,1) + 0.1*a1
-    """
+
     def __init__(self):
         self.n_agents = 2
 
     def reward(self, a1, a2):
-        """Compute reward for joint actions."""
-        # Global optimum at (5,5)
+        """Compute reward for joint actions. Edit as needed for implementation"""
+
         global_term = np.exp(-0.5 * ((a1 - 5)**2 / 1.0 + (a2 - 5)**2 / 9.0))
         global_coef = 10.0 / (2 * np.pi * np.sqrt(9.0))
 
-        # Strengthened local optimum at (1,1)
-        local_term = np.exp(-0.5 * ((a1 - 1)**2 / 1.0 + (a2 - 1)**2 / 1.0))
-        local_coef = 6.5 / (2 * np.pi) # Increased from 5.3
 
-        # Linear bias term
-        linear_term = 0.1 * a1
+        local_term = np.exp(-0.5 * ((a1 - 1)**2 / 1.0 + (a2 - 1)**2 / 1.0))
+        local_coef = 6.5 / (2 * np.pi) 
+        # Linear bias term, preliminarily set to zero for testing
+        linear_term = 0.0 * a1
 
         return global_coef * global_term + local_coef * local_term + linear_term
 
@@ -59,7 +51,7 @@ class GaussianPolicy:
         return np.abs(self.mean - other_policy.mean) + np.abs(self.std - other_policy.std)
 
     def update(self, new_mean, new_std):
-        """Update policy parameters and record history."""
+
         self.mean = new_mean
         self.std = new_std
         self.mean_history.append(new_mean)
@@ -67,7 +59,7 @@ class GaussianPolicy:
 
 
 class SimpleCritic:
-    """A simple baseline critic using an exponential moving average of rewards."""
+
     def __init__(self, lr=0.2):
         self.lr = lr
         self.baseline = 0.0
