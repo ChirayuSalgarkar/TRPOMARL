@@ -27,3 +27,6 @@ Key hyperparameters as specified in the paper (Table 2):
 | Initial μ₀ | 1.5 | 1.5 | 1.5 | 1.5 |
 | Initial σ₀ | 0.5 | 0.5 | 0.5 | 0.5 |
 | Critic LR | 0.2 | 0.2 | 0.2 | 0.2 |
+
+
+For questions or issues, please open a GitHub issue or contact via email to cms8111@rit.edu.
