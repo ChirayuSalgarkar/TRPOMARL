@@ -16,8 +16,7 @@ class DifferentialGameEnv:
         global_coef = 10.0 / (2 * np.pi * np.sqrt(9.0))
         # update based on requirements
         local_term = np.exp(-0.5 * ((a1 - 1)**2 / 1.0 + (a2 - 1)**2 / 1.0))
-        local_coef = 6.5 / (2 * np.pi) # Increased from 5.3
-
+        local_coef = 6.5 / (2 * np.pi) # Edit based on hyperparameter requirement.
         return global_coef * global_term + local_coef * local_term
 
 class GaussianPolicy:
@@ -46,7 +45,6 @@ class GaussianPolicy:
 
 
 class SimpleCritic:
-    """A simple baseline critic using an exponential moving average of rewards."""
     def __init__(self, lr=0.2):
         self.lr = lr
         self.baseline = 0.0
@@ -61,9 +59,6 @@ class SimpleCritic:
 
 
 class OTTRPO:
-    """
-    OT-TRPO with a selectable adaptive trust region method.
-    """
     def __init__(self, env, epsilon=0.1, batch_size=30, critic_lr=0.2,
                  n_iterations=4000, initial_mean=1.5, initial_std=0.5,
                  transport_cost_type='l2', adaptive_method='fixed', caatr_C=0.02):
